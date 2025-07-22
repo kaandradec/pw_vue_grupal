@@ -1,10 +1,14 @@
 <template>
-  <h1>Producto/Servicio</h1>
+  <Producto />
 </template>
 
 <script>
-export default {};
-</script>
+import Producto from "@/components/Producto.vue";
 
-<style>
-</style>
+export default {
+  name: "ProductoServicioView",
+  components: {
+    Producto,
+  },
+};
+</script>
