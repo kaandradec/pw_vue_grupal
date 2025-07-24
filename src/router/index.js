@@ -46,6 +46,7 @@ const routes = [
     component: ReporteFacturasView
   },
 
+
 ]
 
 const router = createRouter({

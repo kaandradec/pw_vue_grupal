@@ -8,6 +8,8 @@ public class ClienteMapper {
     public static ClienteTo toTo(Cliente cliente) {
         ClienteTo cTo = new ClienteTo();
         cTo.setId(cliente.getId());
+        cTo.setRazonSocial(cliente.getRazonSocial());
+        cTo.setCedula(cliente.getCedula());
         cTo.setNombre(cliente.getNombre());
         cTo.setApellido(cliente.getApellido());
         cTo.setEmail(cliente.getEmail());
@@ -20,6 +22,8 @@ public class ClienteMapper {
     public static Cliente ToEntity(ClienteTo clienteTo) {
         Cliente c = new Cliente();
         c.setId(clienteTo.getId());
+        c.setCedula(clienteTo.getCedula());
+        c.setRazonSocial(clienteTo.getRazonSocial());
         c.setNombre(clienteTo.getNombre());
         c.setApellido(clienteTo.getApellido());
         c.setEmail(clienteTo.getEmail());

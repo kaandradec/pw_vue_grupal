@@ -1,9 +1,14 @@
 <template>
-  <h1>Cliente</h1>
+  <Cliente/>
 </template>
 
 <script>
-export default {};
+import Cliente from "@/components/Cliente.vue"
+export default {
+  components: {
+    Cliente,
+  }
+};
 </script>
 
 <style>

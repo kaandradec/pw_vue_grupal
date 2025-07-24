@@ -1,23 +1,37 @@
-package uce.edu.web.service.to;
+package uce.edu.web.repository.modelo;
 
+import jakarta.persistence.*;
 
-import java.util.HashMap;
-import java.util.Map;
+@Entity
+@Table
+public class Cliente {
 
-public class ClienteTo {
-
+    @Id
+    @Column(name="id_cliente")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(unique = true ,name = "cedula_cliente")
     private String cedula;
+
+    @Column(name = "nombre_cliente")
     private String nombre;
+
+    @Column(name = "apellido_cliente")
     private String apellido;
+
+    @Column(name = "razon_social_cliente")
     private String razonSocial;
+
+    @Column(name = "direccion_cliente")
     private String direccion;
+
+    @Column(name = "telefono_cliente")
     private String telefono;
+
+    @Column(name = "email_cliente")
     private String email;
-    private Map<String,String> _links = new HashMap<>();
 
-
-    public ClienteTo(){}
     public Integer getId() {
         return id;
     }
@@ -80,13 +94,5 @@ public class ClienteTo {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Map<String, String> get_links() {
-        return _links;
-    }
-
-    public void set_links(Map<String, String> _links) {
-        this._links = _links;
     }
 }

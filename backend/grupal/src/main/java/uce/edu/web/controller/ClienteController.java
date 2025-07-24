@@ -15,9 +15,7 @@ import uce.edu.web.service.to.ClienteTo;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Path("/cliente")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
+@Path("/clientes")
 public class ClienteController {
 
     @Inject
@@ -71,6 +69,12 @@ public class ClienteController {
 
         if(cliente.getNombre()!= null){
             cliente.setNombre(clienteTo.getNombre());
+        }
+        if(cliente.getCedula()!= null){
+            cliente.setCedula(clienteTo.getCedula());
+        }
+        if(cliente.getRazonSocial()!= null){
+            cliente.setRazonSocial(clienteTo.getRazonSocial());
         }
         if(cliente.getApellido()!= null){
             cliente.setApellido(clienteTo.getApellido());
