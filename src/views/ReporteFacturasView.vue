@@ -1,9 +1,14 @@
 <template>
-  <h1>Reporte Facturas</h1>
+  <ReporteFacturas/>
 </template>
 
 <script>
-export default {};
+import ReporteFacturas from "@/components/ReporteFacturas.vue"
+export default {
+  components: {
+    ReporteFacturas,
+  }
+};
 </script>
 
 <style>

@@ -1,9 +1,14 @@
 <template>
-  <h1>Factura</h1>
+  <Factura/>
 </template>
 
 <script>
-export default {};
+import Factura from "@/components/Factura.vue"
+export default {
+  components: {
+    Factura,
+  }
+};
 </script>
 
 <style>
