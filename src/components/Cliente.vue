@@ -114,25 +114,6 @@
           </tr>
         </tbody>
       </table>
-      <!-- <li
-          v-for="{
-            id,
-            cedula,
-            nombre,
-            apellido,
-            razonSocial,
-            direccion,
-            telefono,
-            email,
-          } in clientes"
-          :key="id"
-        >
-          Id: {{ id }} Cedula: {{ cedula }} - Nombre: {{ nombre }} - Apellido:
-          {{ apellido }} - Razon Social: {{ razonSocial }} - Direccion:
-          {{ direccion }} - Telefono: {{ telefono }} 
-          Email {{ email }}
-        </li>
-      </ul> -->
     </div>
   </div>
 </template>
@@ -233,7 +214,7 @@ export default {
   methods: {
     async consultar() {
       const clienteEncontrado = await consultarClienteFachada(this.cliente.id);
-      this.clientes = clienteEncontrado ? [clienteEncontrado] : [];
+      this.clientes = clienteEncontrado;
     },
     async consultarTodos() {
       this.clientes = await consultarClientesFachada();

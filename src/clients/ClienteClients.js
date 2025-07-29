@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URI_API = "http://localhost:8081/api/grupal/v1/clientes";
+const URI_API = "http://localhost:8081/api/ventas/v1/clientes";
 
 const guardarCliente = async (body) => {
     const data = axios.post(URI_API, body).then(r => r.data);
