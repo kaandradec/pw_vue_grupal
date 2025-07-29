@@ -36,6 +36,17 @@ const AProducto = async (id, body) => {
 export const A_ProductoFachada = async (id, body) => {
   return await AProducto(id, body);
 };
+// PATCH -- actualización parcial de producto
+const patchProducto = async (id, body) => {
+  return axios
+    .patch(`http://localhost:8081/api/ventas/v1/productos/${id}`, body)
+    .then((r) => r.data);
+};
+
+export const Patch_ProductoFachada = async (id, body) => {
+  return await patchProducto(id, body);
+};
+
 //DELETE --public void eliminarPorId(@PathParam("id") Integer id) {
 const EProducto = async (id) => {
   axios
