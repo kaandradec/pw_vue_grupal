@@ -3,7 +3,7 @@ import axios from "axios";
 //GET -- public Response consultarPorId(@PathParam("id") Integer id) {
 const consultarProducto = async (id) => {
   return axios
-    .get(`http://localhost:8081/api/factura/v1/productos/${id}`)
+    .get(`http://localhost:8081/api/ventas/v1/productos/${id}`)
     .then((r) => r.data);
 };
 export const C_ProductoFachada = async (id) => {
@@ -12,7 +12,7 @@ export const C_ProductoFachada = async (id) => {
 // GET -- public Response listarTodos()
 const listarProductos = async () => {
   return axios
-    .get(`http://localhost:8081/api/factura/v1/productos`)
+    .get(`http://localhost:8081/api/ventas/v1/productos`)
     .then((r) => r.data);
 };
 export const L_ProductosFachada = async () => {
@@ -21,7 +21,7 @@ export const L_ProductosFachada = async () => {
 //POST -- public void guardar(@RequestBody ProductoTo productoTo) {
 const G_Producto = async (body) => {
   return axios
-    .post(`http://localhost:8081/api/factura/v1/productos`, body)
+    .post(`http://localhost:8081/api/ventas/v1/productos`, body)
     .then((r) => r.data);
 };
 export const G_ProductoFachada = async (body) => {
@@ -30,7 +30,7 @@ export const G_ProductoFachada = async (body) => {
 //PUT -- public void actualizarPorId(@RequestBody ProductoTo productoTo, @PathParam("id") Integer id) {
 const AProducto = async (id, body) => {
   return axios
-    .put(`http://localhost:8081/api/factura/v1/productos/${id}`, body)
+    .put(`http://localhost:8081/api/ventas/v1/productos/${id}`, body)
     .then((r) => r.data);
 };
 export const A_ProductoFachada = async (id, body) => {
@@ -39,7 +39,7 @@ export const A_ProductoFachada = async (id, body) => {
 //DELETE --public void eliminarPorId(@PathParam("id") Integer id) {
 const EProducto = async (id) => {
   axios
-    .delete(`http://localhost:8081/api/factura/v1/productos/${id}`)
+    .delete(`http://localhost:8081/api/ventas/v1/productos/${id}`)
     .then((r) => r.data);
 };
 export const EProductoFachada = async (id) => {
