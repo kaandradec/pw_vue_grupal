@@ -1,5 +1,8 @@
 import axios from "axios";
 
+axios.defaults.headers.get['Cache-Control'] = 'no-cache';
+axios.defaults.headers.get['Pragma'] = 'no-cache';
+
 const URI_API = "http://localhost:8081/api/ventas/v1/clientes";
 
 const guardarCliente = async (body) => {
@@ -12,8 +15,8 @@ const consultarCliente = async (id) => {
 }
 
 const consultarClientes = async () => {
-    const data =axios.get(URI_API).then(r => r.data);
-    return data;
+    const respuesta =axios.get(URI_API).then(r => r.data);
+    return respuesta;
 }
 
 const actualizarCliente = async (id, body) => {

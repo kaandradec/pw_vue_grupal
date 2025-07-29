@@ -1,15 +1,19 @@
 <template>
-  <Cliente/>
+  <cliente-formulario/>
+<ClienteTabla/>
 </template>
 
 <script>
-import Cliente from "@/components/Cliente.vue"
+import ClienteTabla from '@/components/ClienteTabla.vue';
+import ClienteFormulario from '@/components/ClienteFormulario.vue';
 export default {
   components: {
-    Cliente,
+    ClienteTabla,
+    ClienteFormulario
   }
 };
 </script>
 
+    ClienteTabla
 <style>
 </style>
