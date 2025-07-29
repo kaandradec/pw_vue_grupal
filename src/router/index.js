@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import ProductoServicioView from '@/views/ProductoServicioView.vue'
-import BodegaView from '@/views/BodegaView.vue'
+import BodegaView from '@/views/BodegasView.vue'
 import ClienteView from '@/views/ClienteView.vue'
 import ReporteFacturasView from '@/views/ReporteFacturasView.vue'
 import FacturaView from '@/views/FacturaView.vue'
+
 
 const routes = [
   {
