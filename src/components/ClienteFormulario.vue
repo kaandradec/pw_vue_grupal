@@ -61,6 +61,7 @@
 <script>
 import {
   guardarClienteFachada,
+    consultarClientesFachada,
 } from "../clients/ClienteClients.js";
   export default {
   data() {
@@ -100,6 +101,10 @@ import {
     },
   },
   methods: {
+
+       async consultarTodos() {
+      this.clientes = await consultarClientesFachada();
+    },
     async guardar() {
       const clienteBody = {
         cedula: this.cliente.cedula,
