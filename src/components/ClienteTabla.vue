@@ -1,106 +1,166 @@
 <template>
   <div class="container">
-    <h1>Lista Clientes</h1>
-    <div class="tabla">
-      <table v-if="clientes.length > 0">
+    <div class="formulario-container">
+      <h1>Nuevo Cliente</h1>
+      <form @submit.prevent="guardar">
+        <label for="cedula-nuevo">Cedula:</label>
+        <input
+          id="cedula-nuevo"
+          v-model="clienteParaCrear.cedula"
+          type="text"
+          placeholder="Cedula del cliente"
+          required
+        />
+
+        <label for="nombre-nuevo">Nombre:</label>
+        <input
+          id="nombre-nuevo"
+          v-model="clienteParaCrear.nombre"
+          type="text"
+          placeholder="Nombre del cliente"
+          required
+        />
+
+        <label for="apellido-nuevo">Apellido:</label>
+        <input
+          id="apellido-nuevo"
+          v-model="clienteParaCrear.apellido"
+          type="text"
+          placeholder="Apellido del cliente"
+          required
+        />
+
+        <label for="razonSocial-nuevo">Razon Social:</label>
+        <input
+          id="razonSocial-nuevo"
+          v-model="clienteParaCrear.razonSocial"
+          type="text"
+          placeholder="Razon Social del cliente"
+          required
+        />
+
+        <label for="direccion-nuevo">Direccion:</label>
+        <input
+          id="direccion-nuevo"
+          v-model="clienteParaCrear.direccion"
+          type="text"
+          placeholder="Direccion del cliente"
+          required
+        />
+
+        <label for="telefono-nuevo">Telefono:</label>
+        <input
+          id="telefono-nuevo"
+          v-model="clienteParaCrear.telefono"
+          type="text"
+          placeholder="Telefono del cliente"
+          required
+        />
+
+        <label for="email-nuevo">Email:</label>
+        <input
+          id="email-nuevo"
+          v-model="clienteParaCrear.email"
+          type="email"
+          placeholder="Email del cliente"
+          required
+        />
+
+        <div class="botones">
+          <button type="submit" :disabled="isGuardarDisabled">Guardar</button>
+        </div>
+      </form>
+    </div>
+
+    <hr />
+    <div class="tabla-container">
+      <h1>Lista de Clientes</h1>
+      <table v-if="listaClientes.length > 0">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Cedula</th>
             <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Razon Social</th>
             <th>Direccion</th>
             <th>Telefono</th>
             <th>Correo</th>
-            <th>Accion</th>
-            <th>Accion</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="{
-              id,
-              cedula,
-              nombre,
-              apellido,
-              razonSocial,
-              direccion,
-              telefono,
-              email,
-            } in clientes"
-            :key="id"
-          >
-            <td>{{ id }}</td>
-            <td>{{ cedula }}</td>
-            <td>{{ nombre }}</td>
-            <td>{{ apellido }}</td>
-            <td>{{ razonSocial }}</td>
-            <td>{{ direccion }}</td>
-            <td>{{ telefono }}</td>
-            <td>{{ email }}</td>
+          <tr v-for="cliente in listaClientes" :key="cliente.id">
+            <td>{{ cliente.cedula }}</td>
+            <td>{{ cliente.nombre }}</td>
+            <td>{{ cliente.direccion }}</td>
+            <td>{{ cliente.telefono }}</td>
+            <td>{{ cliente.email }}</td>
             <td>
-              <button @click="borrar(id)">Borrar</button>
-            </td>
-            <td>
-              <button @click="mActualizar(id)">Actualizar</button>
+              <button @click="borrar(cliente.id)">Borrar</button>
+              <button @click="mActualizar(cliente)">Actualizar</button>
             </td>
           </tr>
         </tbody>
       </table>
-      <h1 v-if="clientes.length === 0">No se encuentran clientes</h1>
+      <h1 v-if="listaClientes.length === 0">No se encuentran clientes</h1>
     </div>
-    <div class="actualizar" v-if="mostrarActualizar">
-        <h1>Actualizar Cliente {{ cliente.nombre }}</h1>
-      <label for="cedula">Cedula:</label>
+
+    <div class="formulario-container" v-if="mostrarActualizar">
+      <h1>Actualizar Cliente: {{ clienteParaActualizar.nombre }}</h1>
+      <label for="cedula-actualizar">Cedula:</label>
       <input
-        id="cedula"
-        v-model="cliente.cedula"
+        id="cedula-actualizar"
+        v-model="clienteParaActualizar.cedula"
         type="text"
         placeholder="Cedula del cliente"
       />
-      <label for="nombre">Nombre:</label>
+
+      <label for="nombre-actualizar">Nombre:</label>
       <input
-        id="nombre"
-        v-model="cliente.nombre"
+        id="nombre-actualizar"
+        v-model="clienteParaActualizar.nombre"
         type="text"
         placeholder="Nombre del cliente"
       />
-      <label for="apellido">Apellido:</label>
+
+      <label for="apellido-actualizar">Apellido:</label>
       <input
-        id="apellido"
-        v-model="cliente.apellido"
+        id="apellido-actualizar"
+        v-model="clienteParaActualizar.apellido"
         type="text"
         placeholder="Apellido del cliente"
       />
-      <label for="razonSocial">Razon Social:</label>
+
+      <label for="razonSocial-actualizar">Razon Social:</label>
       <input
-        id="razonSocial"
-        v-model="cliente.razonSocial"
+        id="razonSocial-actualizar"
+        v-model="clienteParaActualizar.razonSocial"
         type="text"
         placeholder="Razon Social del cliente"
       />
-      <label for="direccion">Direccion:</label>
+
+      <label for="direccion-actualizar">Direccion:</label>
       <input
-        id="direccion"
-        v-model="cliente.direccion"
+        id="direccion-actualizar"
+        v-model="clienteParaActualizar.direccion"
         type="text"
         placeholder="Direccion del cliente"
       />
-      <label for="telefono">Telefono:</label>
+
+      <label for="telefono-actualizar">Telefono:</label>
       <input
-        id="telefono"
-        v-model="cliente.telefono"
+        id="telefono-actualizar"
+        v-model="clienteParaActualizar.telefono"
         type="text"
         placeholder="Telefono del cliente"
       />
-      <label for="email">Email:</label>
+
+      <label for="email-actualizar">Email:</label>
       <input
-        id="email"
-        v-model="cliente.email"
+        id="email-actualizar"
+        v-model="clienteParaActualizar.email"
         type="text"
         placeholder="Email del cliente"
       />
+
       <button @click="actualizarParcial()">Actualizar</button>
     </div>
   </div>
@@ -108,15 +168,26 @@
 
 <script>
 import {
+  guardarClienteFachada,
   actualizarParcialClienteFachada,
   borrarClienteFachada,
   consultarClientesFachada,
-  consultarClienteFachada,
 } from "../clients/ClienteClients.js";
+
 export default {
   data() {
     return {
-      cliente: {
+      clienteParaCrear: {
+        cedula: null,
+        nombre: null,
+        apellido: null,
+        razonSocial: null,
+        direccion: null,
+        telefono: null,
+        email: null,
+      },
+      listaClientes: [],
+      clienteParaActualizar: {
         id: null,
         cedula: null,
         nombre: null,
@@ -126,38 +197,78 @@ export default {
         telefono: null,
         email: null,
       },
-      clientes: [],
       mostrarActualizar: false,
     };
+  },
+  computed: {
+    isGuardarDisabled() {
+      const {
+        cedula,
+        nombre,
+        apellido,
+        razonSocial,
+        direccion,
+        telefono,
+        email,
+      } = this.clienteParaCrear;
+      return (
+        !cedula ||
+        !nombre ||
+        !apellido ||
+        !razonSocial ||
+        !direccion ||
+        !telefono ||
+        !email
+      );
+    },
   },
   async created() {
     await this.consultarTodos();
   },
   methods: {
-    async consultarTodos() {
-      this.clientes = await consultarClientesFachada();
+    async guardar() {
+      await guardarClienteFachada(this.clienteParaCrear);
+      this.limpiarFormulario();
+      await this.consultarTodos();
     },
-    async mActualizar(id) {
+    limpiarFormulario() {
+      this.clienteParaCrear = {
+        cedula: null,
+        nombre: null,
+        apellido: null,
+        razonSocial: null,
+        direccion: null,
+        telefono: null,
+        email: null,
+      };
+    },
+
+    async consultarTodos() {
+      this.listaClientes = await consultarClientesFachada();
+    },
+    mActualizar(cliente) {
+      this.clienteParaActualizar = { ...cliente };
       this.mostrarActualizar = true;
-      this.cliente = await consultarClienteFachada(id);
     },
     async actualizarParcial() {
       this.mostrarActualizar = false;
-      const clienteAnterior = this.cliente;
       const clienteBody = {
-        cedula: this.cliente.cedula || clienteAnterior.cedula,
-        nombre: this.cliente.nombre || clienteAnterior.nombre,
-        apellido: this.cliente.apellido || clienteAnterior.apellido,
-        razonSocial: this.cliente.razonSocial || clienteAnterior.razonSocial,
-        direccion: this.cliente.direccion || clienteAnterior.direccion,
-        telefono: this.cliente.telefono || clienteAnterior.telefono,
-        email: this.cliente.email || clienteAnterior.email,
+        cedula: this.clienteParaActualizar.cedula,
+        nombre: this.clienteParaActualizar.nombre,
+        apellido: this.clienteParaActualizar.apellido,
+        razonSocial: this.clienteParaActualizar.razonSocial,
+        direccion: this.clienteParaActualizar.direccion,
+        telefono: this.clienteParaActualizar.telefono,
+        email: this.clienteParaActualizar.email,
       };
-      await actualizarParcialClienteFachada(this.cliente.id, clienteBody);
+      await actualizarParcialClienteFachada(
+        this.clienteParaActualizar.id,
+        clienteBody
+      );
       await this.consultarTodos();
     },
-    async borrar(Id) {
-      await borrarClienteFachada(Id);
+    async borrar(id) {
+      await borrarClienteFachada(id);
       await this.consultarTodos();
     },
   },
@@ -166,68 +277,70 @@ export default {
 
 <style scoped>
 .container {
-  margin: auto;
   padding: 16px;
+  max-width: 1200px;
+  margin: auto;
+  font-family: sans-serif;
 }
-.tabla {
-  width: 80%;
-  margin: 20px auto;
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f9f9f9;
+hr {
+  margin: 2rem 0;
+  border: 1px solid #eee;
 }
-.actualizar{
-  width: 400px;
+.formulario-container,
+.tabla-container {
   margin: 20px auto;
-  padding: 15px;
+  padding: 20px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 8px;
   background-color: #f9f9f9;
 }
 label {
   display: block;
   margin-bottom: 5px;
-  font-size: 14px;
   font-weight: bold;
-  text-align: left;
-}
-button {
-  padding: 5px 10px;
-  margin: 5px 2px;
-  background-color: #007bff;
-  color: #fff;
-  border-radius: 3px;
-  cursor: pointer;
 }
 input {
   width: 100%;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  border: 1px solid #aaa;
-  padding: 5px;
-  text-align: center;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
   box-sizing: border-box;
-    text-align: left;
-
+  margin-bottom: 10px;
 }
-
-.tabla {
-border-radius: 12px;
-  width: 80%;
+.botones {
+  display: flex;
+  gap: 10px;
+}
+button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+button[type="button"] {
+  background-color: #6c757d;
+}
+table {
+  width: 100%;
   border-collapse: collapse;
   margin-top: 16px;
 }
-
-.tabla th, .tabla td {
-  border: 1px solid #ccc;
-  padding: 8px;
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 12px;
   text-align: left;
-  border-radius: 5px;
 }
-
-.tabla th {
-  background-color: #f4f4f4;
+table th {
+  background-color: #f2f2f2;
 }
-
+h1 {
+  margin-top: 0;
+}
 </style>
