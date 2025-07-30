@@ -41,36 +41,50 @@ export default {
 
 <style scoped>
 .container-tabla {
-  display: contents;
-  width: 460px;
+  max-width: 700px;
   margin: 20px auto;
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #c0ecfd;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
 }
+
 table {
   width: 100%;
   border-collapse: collapse;
-  padding: 10px 10px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
-th,
+
+th {
+  background: #007bff;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
 td {
-  border: 1px solid #3956ff;
-  padding: 8px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
 }
+
 button {
   margin: 3px;
-  padding: 5px 10px;
-  background: #00fd61;
+  padding: 8px 15px;
+  background: #28a745;
+  color: white;
   border: none;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background 0.3s ease;
 }
+
 button:hover {
-  background: #ff0000;
+  background: #218838;
 }
 </style>
+
 npm

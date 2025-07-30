@@ -2,6 +2,7 @@
   <div class="container">
     <h2>{{ formProducto.id ? "Editar Producto" : "Nuevo Producto" }}</h2>
 
+    <!-- Código de Barras -->
     <label>Código de Barras:</label>
     <input
       type="text"
@@ -13,10 +14,12 @@
       errores.codigoBarras
     }}</span>
 
+    <!-- Nombre -->
     <label>Nombre:</label>
     <input type="text" v-model="formProducto.nombre" />
     <span v-if="errores.nombre" class="error">{{ errores.nombre }}</span>
 
+    <!-- Categoría -->
     <label>Categoría:</label>
     <select v-model="formProducto.categoria" @change="asignarBodegaSiServicio">
       <option disabled value="">Seleccione categoría</option>
@@ -25,10 +28,12 @@
     </select>
     <span v-if="errores.categoria" class="error">{{ errores.categoria }}</span>
 
+    <!-- Precio -->
     <label>Precio:</label>
     <input type="number" v-model="formProducto.precio" />
     <span v-if="errores.precio" class="error">{{ errores.precio }}</span>
 
+    <!-- Stock -->
     <label>Stock:</label>
     <input
       type="number"
@@ -37,11 +42,9 @@
     />
     <span v-if="errores.stock" class="error">{{ errores.stock }}</span>
 
+    <!-- Bodega -->
     <label>Bodega:</label>
-    <select
-      v-model="formProducto.bodegaId"
-      :disabled="formProducto.categoria === 'servicio'"
-    >
+    <select v-model="formProducto.bodegaId">
       <option disabled value="">Seleccione bodega</option>
       <option v-for="b in bodegas" :key="b.id" :value="b.id">
         {{ b.codigo }} - {{ b.ubicacion }}
@@ -49,6 +52,7 @@
     </select>
     <span v-if="errores.bodegaId" class="error">{{ errores.bodegaId }}</span>
 
+    <!-- Impuestos -->
     <div class="impuestos-section">
       <label>Impuestos:</label>
       <div
@@ -65,6 +69,7 @@
       </div>
     </div>
 
+    <!-- Botones -->
     <div class="acciones">
       <button @click="onGuardar">Guardar</button>
       <button @click="onActualizar">Actualizar</button>
@@ -78,6 +83,7 @@ export default {
     producto: { type: Object, default: () => ({}) },
     bodegas: { type: Array, default: () => [] },
     impuestos: { type: Array, default: () => [] },
+    productosExistentes: { type: Array, default: () => [] }, // Productos para validar código barras duplicado
   },
   data() {
     return {
@@ -139,11 +145,8 @@ export default {
     },
     asignarBodegaSiServicio() {
       if (this.formProducto.categoria === "servicio") {
-        const bodegaServicios = this.bodegas.find(
-          (b) => b.codigo === "SERVICIOS"
-        );
-        this.formProducto.bodegaId = bodegaServicios ? bodegaServicios.id : 1;
         this.formProducto.stock = 0;
+        // No asignar bodega automáticamente, el usuario elige libremente
       }
     },
     actualizarPorcentaje(idx) {
@@ -162,6 +165,13 @@ export default {
       } else if (!/^\d+$/.test(this.formProducto.codigoBarras)) {
         this.errores.codigoBarras =
           "El código de barras debe ser solo números.";
+      } else if (
+        !this.formProducto.id &&
+        this.productosExistentes.some(
+          (p) => p.codigoBarras === this.formProducto.codigoBarras
+        )
+      ) {
+        this.errores.codigoBarras = "Este código de barras ya existe.";
       }
 
       // Nombre
@@ -191,7 +201,7 @@ export default {
         this.errores.precio = "El precio debe ser un número mayor que 0.";
       }
 
-      // Bodega
+      // Bodega (obligatoria sólo para producto y servicio)
       if (!this.formProducto.bodegaId) {
         this.errores.bodegaId = "Debe seleccionar una bodega.";
       }
@@ -216,62 +226,72 @@ export default {
 
 <style scoped>
 .container {
-  width: 460px;
+  max-width: 460px;
   margin: 20px auto;
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f1c1c1;
-  text-align: left;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
+
 label {
-  display: flex;
-  margin-top: 8px;
-  font-weight: bold;
+  display: block;
+  margin-top: 10px;
+  font-weight: 600;
+  color: #2c3e50;
 }
+
 input,
 select {
-  width: 420px;
-  padding: 5px;
-  margin-top: 3px;
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
 }
+
 .impuestos-section {
-  border: 1px solid #dddddd;
-  padding: 10px 10px;
-  margin-top: 25px;
-  margin-bottom: 35px;
-  background: #9799fa;
-  width: 440px;
+  border: 1px solid #007bff;
+  padding: 15px;
+  margin-top: 20px;
+  background: #eaf2ff;
+  border-radius: 8px;
 }
+
 button {
-  margin: 10px;
-  padding: 6px 12px;
+  margin: 10px 5px;
+  padding: 10px 18px;
   background: #007bff;
   color: white;
   border: none;
-  border-radius: 3px;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease;
 }
+
 button:hover {
   background: #0056b3;
 }
+
 .acciones {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   margin-top: 20px;
 }
 
 .impuesto-item {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 5px;
 }
+
 .error {
   color: red;
   font-size: 0.85em;
   margin-top: 3px;
-  display: block;
 }
 </style>

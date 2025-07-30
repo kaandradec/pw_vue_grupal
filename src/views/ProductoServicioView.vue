@@ -6,6 +6,7 @@
       :producto="productoEditar"
       :impuestos="listaImpuestos"
       :bodegas="listaBodegas"
+      :productosExistentes="listaProductos"
       @guardar="guardarProducto"
       @actualizar="actualizarProducto"
       @limpiar="limpiarFormulario"
@@ -22,8 +23,8 @@
 </template>
 
 <script>
-import ProductoForm from "@/components/ProductoForm.vue";
-import ProductoTabla from "@/components/ProductoTabla.vue";
+import ProductoForm from "@/components/Producto-Servicio/ProductoForm.vue";
+import ProductoTabla from "@/components/Producto-Servicio/ProductoTabla.vue";
 
 import {
   L_ProductosFachada,
@@ -148,16 +149,21 @@ export default {
 
 <style scoped>
 .container-General {
-  width: 500px;
-  margin: 20px auto;
-  padding: 15px;
-  border: 1px solid #0400ff56;
-  border-radius: 5px;
-  background-color: #a5abf7;
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 25px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
+  border: 1px solid #e1e1e1;
 }
 
 h1 {
-  text-align: center;
+  color: #2c3e50;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
 }
 </style>
