@@ -123,27 +123,17 @@ export default {
 };
 </script>
 
-<style >
-.formulario-container {
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
+<style>
+.container {
+  max-width: 80%;
+  margin: 0 auto;
+  margin-top: 16px;
+  padding: 25px;
+  background: #f8f9fa;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  border: 1px solid #e9ecef;
 }
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  margin-bottom: 10px;
-}
+
 .botones {
   display: flex;
   gap: 10px;

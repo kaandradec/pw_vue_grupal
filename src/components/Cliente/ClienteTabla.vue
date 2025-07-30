@@ -133,9 +133,10 @@ export default {
 </script>
 
 <style >
+
 .formulario-container,
 .tabla-container {
-  margin: 20px auto;
+  
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;

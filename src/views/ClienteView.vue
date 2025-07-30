@@ -73,14 +73,15 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .container {
-  padding: 16px;
-  max-width: 1200px;
+  padding: 20px;
+  max-width: 60%;
   margin: auto;
   font-family: sans-serif;
 }
 hr {
+  
   margin: 2rem 0;
   border: 1px solid #eee;
 }

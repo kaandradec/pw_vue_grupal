@@ -1,14 +1,5 @@
 /* Contenido de src/assets/global.css */
 
-.container {
-  max-width: 1024px;
-  margin: 0 auto;
-  margin-top: 16px;
-  padding: 25px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
-}
 
 .form-container {
   display: flex;
