@@ -72,4 +72,9 @@ export default {
 .botones-acciones button:hover {
   background-color: #0056b3;
 }
+
+.table-wrapper {
+  overflow-x: auto; 
+  margin-top: 20px; 
+}
 </style>
