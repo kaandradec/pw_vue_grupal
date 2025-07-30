@@ -106,7 +106,7 @@ export default {
       const cantidad = parseFloat(d.cantidad) || 0;
       const precio = parseFloat(d.precio) || 0;
       const impuesto = parseFloat(d.impuesto) || 0;
-      d.subtotal = (cantidad * precio * (1 + impuesto / 100)).toFixed(2);
+      d.subtotal = (cantidad * precio ).toFixed(2);
       this.emitirCambios();
     },
 

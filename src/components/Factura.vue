@@ -154,7 +154,7 @@ export default {
         this.limpiarFormulario();
       } catch (error) {
         this.mostrarMensaje("Error al guardar la factura", "error");
-        console.error("❌ Error al guardar:", error);
+        console.error(" Error al guardar:", error);
       }
 
       console.log("🧾 Factura lista:", facturaPlano);
