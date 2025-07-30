@@ -36,17 +36,20 @@
       <input
         id="cedula-actualizar"
         v-model="clienteActualizar.cedula"
-        type="number"
+        @input="validarCedulaActualizar"
+        type="text"
         placeholder="Cedula del cliente"
+        maxlength="10"
       />
-       <label for="nombre-actualizar">Nombre:</label>
+      <span v-if="cedulaError" class="error-message">{{ cedulaError }}</span>
+
+      <label for="nombre-actualizar">Nombre:</label>
       <input
         id="nombre-actualizar"
         v-model="clienteActualizar.nombre"
         type="text"
         placeholder="Nombre del cliente"
       />
-
       <label for="apellido-actualizar">Apellido:</label>
       <input
         id="apellido-actualizar"
@@ -54,7 +57,6 @@
         type="text"
         placeholder="Apellido del cliente"
       />
-
       <label for="razonSocial-actualizar">Razon Social:</label>
       <input
         id="razonSocial-actualizar"
@@ -62,7 +64,6 @@
         type="text"
         placeholder="Razon Social del cliente"
       />
-
       <label for="direccion-actualizar">Direccion:</label>
       <input
         id="direccion-actualizar"
@@ -70,7 +71,6 @@
         type="text"
         placeholder="Direccion del cliente"
       />
-
       <label for="telefono-actualizar">Telefono:</label>
       <input
         id="telefono-actualizar"
@@ -78,7 +78,6 @@
         type="text"
         placeholder="Telefono del cliente"
       />
-
       <label for="email-actualizar">Email:</label>
       <input
         id="email-actualizar"
@@ -87,7 +86,9 @@
         placeholder="Email del cliente"
       />
 
-      <button @click="actualizarParcial()">Actualizar</button>
+      <button @click="actualizarParcial()" :disabled="!!cedulaError">
+        Actualizar
+      </button>
     </div>
   </div>
 </template>
@@ -95,33 +96,50 @@
 <script>
 export default {
   props: {
-    clientes: {
-      type: Array,
-      required: true,
-    },
+    clientes: { type: Array, required: true },
   },
-  emits: ["borrar-cliente", "actualizar-cliente"], 
+  emits: ["borrar-cliente", "actualizar-cliente"],
   data() {
     return {
       clienteActualizar: {
-        id: null,
-        cedula: null,
-        nombre: null,
-        apellido: null,
-        razonSocial: null,
-        direccion: null,
-        telefono: null,
-        email: null,
+        /* ... */
       },
       mostrarActualizar: false,
+      cedulaError: null,
     };
   },
   methods: {
+    validarCedulaActualizar() {
+      const cedula = this.clienteActualizar.cedula;
+
+      if (!/^\d+$/.test(cedula)) {
+        this.cedulaError = "La cédula solo debe contener números.";
+        return;
+      }
+      if (cedula.length !== 10) {
+        this.cedulaError = "La cédula debe tener exactamente 10 dígitos.";
+        return;
+      }
+      const esDuplicado = this.clientes.some(
+        (cliente) =>
+          cliente.cedula === cedula && cliente.id !== this.clienteActualizar.id
+      );
+      if (esDuplicado) {
+        this.cedulaError = "Esta cédula ya está registrada en otro cliente.";
+        return;
+      }
+      this.cedulaError = null;
+    },
     mActualizar(cliente) {
-      this.clienteActualizar = { ...cliente }; 
+      this.clienteActualizar = { ...cliente };
       this.mostrarActualizar = true;
+      this.cedulaError = null;
     },
     actualizarParcial() {
+      this.validarCedulaActualizar();
+      if (this.cedulaError) {
+        return;
+      }
       this.mostrarActualizar = false;
       this.$emit("actualizar-cliente", this.clienteActualizar);
     },
@@ -132,11 +150,9 @@ export default {
 };
 </script>
 
-<style >
-
+<style>
 .formulario-container,
 .tabla-container {
-  
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;

@@ -13,6 +13,14 @@ p {
   color: #495057;
 }
 
+.error-message {
+  color: red;
+  font-size: 12px;
+  display: block;
+  margin-top: -5px;
+  margin-bottom: 10px;
+}
+
 p:before {
   content: attr(type);
   display: block;
@@ -33,6 +41,7 @@ label {
   font-weight: bold;
   text-align: left;
 }
+
 input {
   width: 100%;
   padding: 8px;
