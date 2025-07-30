@@ -1,47 +1,44 @@
 <template>
   <div class="factura-container">
     <div class="header">
-      <h1>Crear Factura</h1>
+      <h1>Ingresar Factura</h1>
     </div>
 
     <div class="factura-form">
-      <!-- Cabecera de la Factura -->
-      <CabeceraFactura 
-        :cabecera="factura.cabecera"
-        @cabecera-cambiada="actualizarCabecera"
+      <CabeceraFactura
+        :cabecera="cabecera"
+        @cabecera-actualizada="actualizarCabecera"
       />
 
-      <!-- Identificación del Cliente -->
-      <IdentificacionCliente 
+      <IdentificacionCliente
         ref="identificacionCliente"
         @cliente-encontrado="actualizarCliente"
         @mensaje="mostrarMensaje"
       />
 
-      <!-- Detalle de la Factura -->
-      <DetalleFactura 
+      <DetalleFactura
         ref="detalleFactura"
         @detalles-cambiados="actualizarDetalles"
         @mensaje="mostrarMensaje"
       />
 
-      <!-- Resumen de la Factura -->
-      <ResumenFactura 
-        :detalles="factura.detalles"
-      />
+      <ResumenFactura :detalles="detalles" />
 
-      <!-- Botones de Acción -->
       <div class="actions">
-        <button type="button" @click="guardarFactura" class="btn-save" :disabled="!esValida">
-          💾 Guardar Factura
+        <button
+          type="button"
+          @click="guardarFactura"
+          class="btn-save"
+          :disabled="!esValida"
+        >
+          Guardar Factura
         </button>
         <button type="button" @click="limpiarFormulario" class="btn-clear">
-          🗑️ Limpiar
+          Limpiar
         </button>
       </div>
     </div>
 
-    <!-- Mensajes de estado -->
     <div v-if="mensaje" :class="['mensaje', mensajeTipo]">
       {{ mensaje }}
     </div>
@@ -49,116 +46,153 @@
 </template>
 
 <script>
-import { guardarFacturaFachada } from '@/clients/facturaClients.js';
-import CabeceraFactura from './factura/CabeceraFactura.vue';
-import IdentificacionCliente from './factura/IdentificacionCliente.vue';
-import DetalleFactura from './factura/DetalleFactura.vue';
-import ResumenFactura from './factura/ResumenFactura.vue';
+import { guardarFacturaFachada } from "@/clients/facturaClients.js";
+import CabeceraFactura from "./factura/CabeceraFactura.vue";
+import IdentificacionCliente from "./factura/IdentificacionCliente.vue";
+import DetalleFactura from "./factura/DetalleFactura.vue";
+import ResumenFactura from "./factura/ResumenFactura.vue";
 
 export default {
-  name: 'Factura',
+  name: "Factura",
   components: {
     CabeceraFactura,
     IdentificacionCliente,
     DetalleFactura,
-    ResumenFactura
+    ResumenFactura,
   },
   data() {
     return {
-      factura: {
-        cabecera: {
-          rucEmpresa: '',
-          numeroDocumento: '',
-          establecimiento: '',
-          puntoEmision: '',
-          fechaEmision: new Date().toISOString().split('T')[0]
-        },
-        cliente: null,
-        detalles: []
+      cabecera: {
+        rucEmpresa: "",
+        numeroDocumento: "",
+        establecimiento: "",
+        puntoEmision: "",
+        fechaEmision: new Date().toISOString().split("T")[0],
       },
-      mensaje: '',
-      mensajeTipo: 'success'
+      cliente: null,
+      detalles: [],
+      mensaje: "",
+      mensajeTipo: "success",
     };
   },
   computed: {
     esValida() {
-      return this.factura.cabecera.rucEmpresa && 
-             this.factura.cabecera.numeroDocumento && 
-             this.factura.cabecera.establecimiento && 
-             this.factura.cabecera.puntoEmision && 
-             this.factura.cliente && 
-             this.factura.detalles.length > 0;
-    }
+      return (
+        this.cabecera.rucEmpresa &&
+        this.cabecera.numeroDocumento &&
+        this.cabecera.establecimiento &&
+        this.cabecera.puntoEmision &&
+        this.cliente &&
+        this.detalles.length > 0
+      );
+    },
   },
   methods: {
     actualizarCabecera(cabecera) {
-      this.factura.cabecera = cabecera;
+      Object.assign(this.cabecera, cabecera);
     },
-    
     actualizarCliente(cliente) {
-      this.factura.cliente = cliente;
+      this.cliente = cliente;
     },
-    
     actualizarDetalles(detalles) {
-      this.factura.detalles = detalles;
+      this.detalles = detalles;
     },
-    
+
+    calcularSubtotal() {
+      return this.detalles.reduce((total, item) => {
+        return total + parseFloat(item.subtotal || 0);
+      }, 0).toFixed(2);
+    },
+
+    calcularImpuestos() {
+      return this.detalles.reduce((total, item) => {
+        const cantidad = parseFloat(item.cantidad) || 0;
+        const precio = parseFloat(item.precio) || 0;
+        const impuesto = parseFloat(item.impuesto) || 0;
+        return total + (cantidad * precio * (impuesto / 100));
+      }, 0).toFixed(2);
+    },
+
+    calcularTotal() {
+      const subtotal = parseFloat(this.calcularSubtotal()) || 0;
+      const impuestos = parseFloat(this.calcularImpuestos()) || 0;
+      return (subtotal + impuestos).toFixed(2);
+    },
+
     async guardarFactura() {
       if (!this.esValida) {
-        this.mostrarMensaje('Por favor complete todos los campos requeridos', 'error');
+        this.mostrarMensaje(
+          "Por favor complete todos los campos requeridos",
+          "error"
+        );
         return;
       }
-      
+
+      const detallesValidos = this.detalles.every(
+        (d) =>
+          d.cantidad > 0 &&
+          d.precio >= 0 &&
+          typeof d.impuesto !== "undefined"
+      );
+      if (!detallesValidos) {
+        this.mostrarMensaje("Hay detalles incompletos o inválidos", "error");
+        return;
+      }
+
+      const facturaPlano = {
+        ...this.cabecera,
+        cliente: this.cliente,
+        detalles: this.detalles,
+        subtotal: this.calcularSubtotal(),
+        totalImpuestos: this.calcularImpuestos(),
+        total: this.calcularTotal(),
+      };
+
       try {
-        await guardarFacturaFachada(this.factura);
-        this.mostrarMensaje('Factura guardada exitosamente', 'success');
+        await guardarFacturaFachada(facturaPlano);
+        this.mostrarMensaje("Factura guardada exitosamente", "success");
         this.limpiarFormulario();
       } catch (error) {
-        this.mostrarMensaje('Error al guardar la factura', 'error');
+        this.mostrarMensaje("Error al guardar la factura", "error");
+        console.error("❌ Error al guardar:", error);
       }
+
+      console.log("🧾 Factura lista:", facturaPlano);
     },
-    
+
     limpiarFormulario() {
-      this.factura = {
-        cabecera: {
-          rucEmpresa: '',
-          numeroDocumento: '',
-          establecimiento: '',
-          puntoEmision: '',
-          fechaEmision: new Date().toISOString().split('T')[0]
-        },
-        cliente: null,
-        detalles: []
+      this.cabecera = {
+        rucEmpresa: "",
+        numeroDocumento: "",
+        establecimiento: "",
+        puntoEmision: "",
+        fechaEmision: new Date().toISOString().split("T")[0],
       };
-      
-      // Limpiar componentes hijos usando refs
-      if (this.$refs.identificacionCliente) {
+      this.cliente = null;
+      this.detalles = [];
+      if (this.$refs.identificacionCliente)
         this.$refs.identificacionCliente.limpiar();
-      }
-      if (this.$refs.detalleFactura) {
+      if (this.$refs.detalleFactura)
         this.$refs.detalleFactura.limpiar();
-      }
-      
-      this.mensaje = '';
+      this.mensaje = "";
     },
-    
+
     mostrarMensaje(texto, tipo) {
       this.mensaje = texto;
       this.mensajeTipo = tipo;
       setTimeout(() => {
-        this.mensaje = '';
+        this.mensaje = "";
       }, 3000);
-    }
-  }
+    },
+  },
 };
 </script>
-
 <style scoped>
 .factura-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .header {
@@ -239,18 +273,16 @@ export default {
   background: #dc3545;
 }
 
-
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .factura-container {
     padding: 10px;
   }
-  
+
   .actions {
     flex-direction: column;
   }
-  
+
   .header h1 {
     font-size: 2rem;
   }
@@ -260,8 +292,9 @@ export default {
   .header h1 {
     font-size: 1.5rem;
   }
-  
-  .btn-save, .btn-clear {
+
+  .btn-save,
+  .btn-clear {
     padding: 12px 20px;
     font-size: 14px;
   }

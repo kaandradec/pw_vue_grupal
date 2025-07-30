@@ -1,10 +1,11 @@
 import axios from "axios";
 
-const URI_API = "http://localhost:8081/api/grupal/v1/facturas";
-const URI_REPORTES = "http://localhost:8081/api/grupal/v1/reportes";
+const URI_API = "http://localhost:8081/api/ventas/v1/facturas";
+const URI_REPORTES = "http://localhost:8081/api/ventas/v1/reportes";
 
 // Crear factura
 const guardarFactura = async (body) => {
+    console.log("🛠️ Payload real enviado:", body);
     const data = axios.post(URI_API, body).then(r => r.data);
     return data;
 }
@@ -45,15 +46,17 @@ const obtenerReporteFacturas = async () => {
     return data;
 }
 
+const urlC =`http://localhost:8081/api/ventas/v1/clientes/traer`;
 // Buscar cliente por cédula
 const buscarClientePorCedula = async (cedula) => {
-    const data = axios.get(`http://localhost:8081/api/grupal/v1/clientes/buscar?cedula=${cedula}`).then(r => r.data);
+    const data = axios.get(`${urlC}/${cedula}`).then(r => r.data);
     return data;
 }
 
 // Buscar producto por código de barras
+const urlP =`http://localhost:8081/api/ventas/v1/productos/traer`
 const buscarProductoPorCodigoBarras = async (codigoBarras) => {
-    const data = axios.get(`http://localhost:8081/api/grupal/v1/productos/buscar?codigoBarras=${codigoBarras}`).then(r => r.data);
+    const data = axios.get(`${urlP}/${codigoBarras}`).then(r => r.data);
     return data;
 }
 

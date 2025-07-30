@@ -1,13 +1,12 @@
 <template>
   <div class="section">
-    <h2>Cabecera de la Factura</h2>
     <div class="form-grid">
       <div class="form-group">
         <label for="rucEmpresa">RUC Empresa *</label>
         <input 
           type="text" 
           id="rucEmpresa" 
-          v-model="cabecera.rucEmpresa" 
+          v-model="cabeceraLocal.rucEmpresa" 
           placeholder="1234567890001"
           required
           @input="emitirCambios"
@@ -18,7 +17,7 @@
         <input 
           type="text" 
           id="numeroDocumento" 
-          v-model="cabecera.numeroDocumento" 
+          v-model="cabeceraLocal.numeroDocumento" 
           placeholder="001-001-000000001"
           required
           @input="emitirCambios"
@@ -29,7 +28,7 @@
         <input 
           type="text" 
           id="establecimiento" 
-          v-model="cabecera.establecimiento" 
+          v-model="cabeceraLocal.establecimiento" 
           placeholder="001"
           required
           @input="emitirCambios"
@@ -40,7 +39,7 @@
         <input 
           type="text" 
           id="puntoEmision" 
-          v-model="cabecera.puntoEmision" 
+          v-model="cabeceraLocal.puntoEmision" 
           placeholder="001"
           required
           @input="emitirCambios"
@@ -51,7 +50,7 @@
         <input 
           type="date" 
           id="fechaEmision" 
-          v-model="cabecera.fechaEmision" 
+          v-model="cabeceraLocal.fechaEmision" 
           readonly
         />
       </div>
@@ -68,11 +67,18 @@ export default {
       required: true
     }
   },
-  methods: {
-    emitirCambios() {
-      this.$emit('cabecera-cambiada', this.cabecera);
-    }
+  data() {
+  return {
+    cabeceraLocal: { ...this.cabecera } // copia limpia
+  };
+},
+ methods: {
+  emitirCambios() {
+    this.$emit('cabecera-actualizada', { ...this.cabeceraLocal }); // copia limpia
+    console.log(" cabecera emitida:", this.cabeceraLocal);
   }
+}
+
 };
 </script>
 
@@ -92,7 +98,7 @@ export default {
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
 }
 
@@ -102,8 +108,9 @@ export default {
 }
 
 .form-group label {
-  font-weight: 600;
-  margin-bottom: 8px;
+  text-align: left;
+  font-weight: 500;
+  margin-bottom: 5px;
   color: #495057;
 }
 
@@ -111,7 +118,8 @@ export default {
   padding: 12px;
   border: 2px solid #e9ecef;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 12px;
+  width: 160px;
 }
 
 .form-group input:focus {

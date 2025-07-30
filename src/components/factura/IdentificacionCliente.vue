@@ -1,6 +1,6 @@
 <template>
   <div class="section">
-    <h2>Identificación del Cliente</h2>
+    <h2>Datos del Cliente</h2>
     <div class="form-grid">
       <div class="form-group">
         <label for="cedulaCliente">Cédula del Cliente *</label>
@@ -14,7 +14,7 @@
             required
           />
           <button type="button" @click="buscarCliente" class="search-btn">
-            🔍
+            Buscar
           </button>
         </div>
       </div>
@@ -73,15 +73,19 @@ export default {
         this.clienteInfo = {
           nombre: `${cliente.nombre} ${cliente.apellido}`,
           direccion: cliente.direccion,
-          correo: cliente.correo
+          correo: cliente.email
+          
         };
+       
         this.$emit('cliente-encontrado', { id: cliente.id });
         this.$emit('mensaje', 'Cliente encontrado', 'success');
       } catch (error) {
         this.clienteInfo = { nombre: '', direccion: '', correo: '' };
         this.$emit('cliente-encontrado', null);
         this.$emit('mensaje', 'Cliente no encontrado', 'error');
+         console.log("cliente"+ this.clienteInfo);
       }
+       console.log("cliente"+ this.clienteInfo);
     },
     
     limpiar() {

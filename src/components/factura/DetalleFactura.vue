@@ -1,44 +1,40 @@
 <template>
   <div class="section">
-    <h2>Detalle de la Factura</h2>
+    <h2>Detalles de Factura</h2>
     <div class="detalle-container">
       <div class="detalle-header">
         <h3>Agregar Producto/Servicio</h3>
         <button type="button" @click="agregarDetalle" class="btn-add">
-          + Agregar Item
+          + Agregar Producto
         </button>
       </div>
-      
+
       <div v-for="(detalle, index) in detalles" :key="index" class="detalle-item">
         <div class="detalle-grid-vertical">
           <div class="row">
             <div class="form-group">
               <label>Código de Barras</label>
               <div class="search-container">
-                <input 
-                  type="text" 
-                  v-model="detalle.codigoBarras" 
+                <input
+                  type="text"
+                  v-model="detalle.codigoBarras"
                   @blur="buscarProducto(index)"
                   placeholder="123456789"
                 />
                 <button type="button" @click="buscarProducto(index)" class="search-btn">
-                  🔍
+                  Buscar
                 </button>
               </div>
             </div>
             <div class="form-group">
               <label>Nombre</label>
-              <input 
-                type="text" 
-                v-model="detalle.nombre" 
-                readonly
-              />
+              <input type="text" v-model="detalle.nombre" readonly />
             </div>
             <div class="form-group">
               <label>Cantidad</label>
-              <input 
-                type="number" 
-                v-model="detalle.cantidad" 
+              <input
+                type="number"
+                v-model="detalle.cantidad"
                 min="1"
                 @input="calcularSubtotal(index)"
               />
@@ -47,21 +43,11 @@
           <div class="row">
             <div class="form-group">
               <label>Precio</label>
-              <input 
-                type="number" 
-                v-model="detalle.precio" 
-                step="0.01"
-                readonly
-              />
+              <input type="number" v-model="detalle.precio" step="0.01" readonly />
             </div>
             <div class="form-group">
               <label>Subtotal</label>
-              <input 
-                type="number" 
-                v-model="detalle.subtotal" 
-                step="0.01"
-                readonly
-              />
+              <input type="number" v-model="detalle.subtotal" step="0.01" readonly />
             </div>
             <div class="form-group form-group-btn">
               <label style="visibility:hidden">Borrar</label>
@@ -90,52 +76,62 @@ export default {
     async buscarProducto(index) {
       const detalle = this.detalles[index];
       if (!detalle.codigoBarras) return;
-      
+
       try {
         const producto = await buscarProductoPorCodigoBarrasFachada(detalle.codigoBarras);
-        detalle.nombre = producto.nombre;
-        detalle.precio = producto.precio;
+        detalle.nombre = producto.nombre || '';
+        detalle.precio = producto.precio || 0;
+
+        detalle.impuesto = Array.isArray(producto.impuestos) && producto.impuestos.length > 0
+          ? producto.impuestos[0].porcentaje
+          : 0;
+
         detalle.producto = { id: producto.id };
         this.calcularSubtotal(index);
         this.$emit('mensaje', 'Producto encontrado', 'success');
       } catch (error) {
         detalle.nombre = '';
         detalle.precio = 0;
+        detalle.impuesto = 0;
         detalle.producto = null;
         this.calcularSubtotal(index);
         this.$emit('mensaje', 'Producto no encontrado', 'error');
       }
-    },
-    
-    calcularSubtotal(index) {
-      const detalle = this.detalles[index];
-      const cantidad = parseFloat(detalle.cantidad) || 0;
-      const precio = parseFloat(detalle.precio) || 0;
-      detalle.subtotal = (cantidad * precio).toFixed(2);
+
       this.emitirCambios();
     },
-    
+
+    calcularSubtotal(index) {
+      const d = this.detalles[index];
+      const cantidad = parseFloat(d.cantidad) || 0;
+      const precio = parseFloat(d.precio) || 0;
+      const impuesto = parseFloat(d.impuesto) || 0;
+      d.subtotal = (cantidad * precio * (1 + impuesto / 100)).toFixed(2);
+      this.emitirCambios();
+    },
+
     agregarDetalle() {
       this.detalles.push({
         codigoBarras: '',
         nombre: '',
         cantidad: 1,
         precio: 0,
+        impuesto: 0,
         subtotal: 0,
         producto: null
       });
       this.emitirCambios();
     },
-    
+
     eliminarDetalle(index) {
       this.detalles.splice(index, 1);
       this.emitirCambios();
     },
-    
+
     emitirCambios() {
       this.$emit('detalles-cambiados', this.detalles);
     },
-    
+
     limpiar() {
       this.detalles = [];
       this.emitirCambios();

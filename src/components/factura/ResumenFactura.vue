@@ -1,6 +1,5 @@
 <template>
   <div class="section">
-    <h2>Resumen de la Factura</h2>
     <div class="resumen-container">
       <div class="resumen-item">
         <span>Subtotal:</span>
@@ -20,30 +19,39 @@
 
 <script>
 export default {
-  name: 'ResumenFactura',
+  name: "ResumenFactura",
   props: {
     detalles: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     subtotal() {
       return this.detalles.reduce((sum, detalle) => {
-        return sum + (parseFloat(detalle.subtotal) || 0);
+        const cantidad = parseFloat(detalle.cantidad) || 0;
+        const precio = parseFloat(detalle.precio) || 0;
+        console.log("impuesto",this.impuesto);
+        return sum + cantidad * precio;
       }, 0);
     },
+
     totalImpuestos() {
       return this.detalles.reduce((sum, detalle) => {
-        const subtotal = parseFloat(detalle.subtotal) || 0;
-        const impuestos = subtotal * 0.12; // IVA 12%
-        return sum + impuestos;
+        const cantidad = parseFloat(detalle.cantidad) || 0;
+        const precio = parseFloat(detalle.precio) || 0;
+        const impuesto = parseFloat(detalle.impuesto) || 0;
+
+        const base = cantidad * precio;
+        const valorImpuesto = base * (impuesto / 100);
+
+        return sum + valorImpuesto;
       }, 0);
     },
     total() {
       return this.subtotal + this.totalImpuestos;
-    }
-  }
+    },
+  },
 };
 </script>
 
