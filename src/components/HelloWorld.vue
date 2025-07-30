@@ -1,44 +1,26 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
+    
+    <h2>Bienvenido al Centro Médico EcoSalud</h2>
     <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
+      En el Centro Médico Vida Sana nos dedicamos a cuidar tu salud y la de tu familia.<br>
+      Nuestro equipo profesional y nuestras modernas instalaciones están a tu servicio para ofrecerte la mejor atención médica.<br>
+      ¡Gracias por confiar en nosotros!
     </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-router" target="_blank" rel="noopener">router</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-unit-jest" target="_blank" rel="noopener">unit-jest</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+   </div>
 </template>
 
 <script>
 export default {
   name: 'HelloWorld',
-  props: {
-    msg: String
-  }
+ 
 }
 </script>
+<style scoped>
+.hello {
+  background: linear-gradient(135deg, #ecf6f6 0%, #d0f0f5 100%);
+}
+</style>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
@@ -55,5 +37,19 @@ li {
 }
 a {
   color: #42b983;
+}
+.logo {
+  width: 120px;
+  height: auto;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(66, 185, 131, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin: 24px auto 16px auto;
+  display: block;
+  background: linear-gradient(135deg, #e0f7fa 0%, #f7f7f2 100%);
+}
+.logo:hover {
+  transform: scale(1.04) rotate(-2deg);
+  box-shadow: 0 8px 24px rgba(66, 185, 131, 0.18);
 }
 </style>
