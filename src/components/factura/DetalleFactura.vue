@@ -9,7 +9,11 @@
         </button>
       </div>
 
-      <div v-for="(detalle, index) in detalles" :key="index" class="detalle-item">
+      <div
+        v-for="(detalle, index) in detalles"
+        :key="index"
+        class="detalle-item"
+      >
         <div class="detalle-grid-vertical">
           <div class="row">
             <div class="form-group">
@@ -21,7 +25,11 @@
                   @blur="buscarProducto(index)"
                   placeholder="123456789"
                 />
-                <button type="button" @click="buscarProducto(index)" class="search-btn">
+                <button
+                  type="button"
+                  @click="buscarProducto(index)"
+                  class="search-btn"
+                >
                   Buscar
                 </button>
               </div>
@@ -36,22 +44,44 @@
                 type="number"
                 v-model="detalle.cantidad"
                 min="1"
+                :max="detalle.stock"
                 @input="calcularSubtotal(index)"
+                :class="{ error: erroresStock && erroresStock[index] }"
               />
+              <span
+                v-if="erroresStock && erroresStock[index]"
+                class="error-message"
+              >
+                {{ erroresStock[index] }}
+              </span>
             </div>
           </div>
           <div class="row">
             <div class="form-group">
               <label>Precio</label>
-              <input type="number" v-model="detalle.precio" step="0.01" readonly />
+              <input
+                type="number"
+                v-model="detalle.precio"
+                step="0.01"
+                readonly
+              />
             </div>
             <div class="form-group">
               <label>Subtotal</label>
-              <input type="number" v-model="detalle.subtotal" step="0.01" readonly />
+              <input
+                type="number"
+                v-model="detalle.subtotal"
+                step="0.01"
+                readonly
+              />
             </div>
             <div class="form-group form-group-btn">
-              <label style="visibility:hidden">Borrar</label>
-              <button type="button" @click="eliminarDetalle(index)" class="btn-delete">
+              <label style="visibility: hidden">Borrar</label>
+              <button
+                type="button"
+                @click="eliminarDetalle(index)"
+                class="btn-delete"
+              >
                 Borrar
               </button>
             </div>
@@ -63,14 +93,26 @@
 </template>
 
 <script>
-import { buscarProductoPorCodigoBarrasFachada } from '@/clients/facturaClients.js';
+import { buscarProductoPorCodigoBarrasFachada } from "@/clients/facturaClients.js";
 
 export default {
-  name: 'DetalleFactura',
+  name: "DetalleFactura",
   data() {
     return {
-      detalles: []
+      detalles: [],
+      erroresStock: [], // Para almacenar errores de stock por índice
     };
+  },
+  watch: {
+    // Watcher profundo para observar cambios en el array detalles
+    detalles: {
+      handler(nuevoDetalles) {
+        nuevoDetalles.forEach((detalle, index) => {
+          this.validarStock(index);
+        });
+      },
+      deep: true, // Observa cambios profundos en objetos dentro del array
+    },
   },
   methods: {
     async buscarProducto(index) {
@@ -78,24 +120,28 @@ export default {
       if (!detalle.codigoBarras) return;
 
       try {
-        const producto = await buscarProductoPorCodigoBarrasFachada(detalle.codigoBarras);
-        detalle.nombre = producto.nombre || '';
+        const producto = await buscarProductoPorCodigoBarrasFachada(
+          detalle.codigoBarras
+        );
+        detalle.nombre = producto.nombre || "";
         detalle.precio = producto.precio || 0;
+        detalle.stock = producto.stock || 0;
 
-        detalle.impuesto = Array.isArray(producto.impuestos) && producto.impuestos.length > 0
-          ? producto.impuestos[0].porcentaje
-          : 0;
+        detalle.impuesto =
+          Array.isArray(producto.impuestos) && producto.impuestos.length > 0
+            ? producto.impuestos[0].porcentaje
+            : 0;
 
         detalle.producto = { id: producto.id };
         this.calcularSubtotal(index);
-        this.$emit('mensaje', 'Producto encontrado', 'success');
+        this.$emit("mensaje", "Producto encontrado", "success");
       } catch (error) {
-        detalle.nombre = '';
+        detalle.nombre = "";
         detalle.precio = 0;
         detalle.impuesto = 0;
         detalle.producto = null;
         this.calcularSubtotal(index);
-        this.$emit('mensaje', 'Producto no encontrado', 'error');
+        this.$emit("mensaje", "Producto no encontrado", "error");
       }
 
       this.emitirCambios();
@@ -106,37 +152,72 @@ export default {
       const cantidad = parseFloat(d.cantidad) || 0;
       const precio = parseFloat(d.precio) || 0;
       const impuesto = parseFloat(d.impuesto) || 0;
-      d.subtotal = (cantidad * precio ).toFixed(2);
+      d.subtotal = (cantidad * precio).toFixed(2);
+      this.validarStock(index); // Validar stock al calcular subtotal
       this.emitirCambios();
+    },
+
+    validarStock(index) {
+      const detalle = this.detalles[index];
+      const cantidad = parseFloat(detalle.cantidad) || 0;
+      const stock = parseFloat(detalle.stock) || 0;
+
+      // Asegurar que erroresStock tenga el tamaño correcto
+      while (this.erroresStock.length <= index) {
+        this.erroresStock.push(null);
+      }
+
+      if (cantidad > stock && stock > 0) {
+        // En Vue 3, simplemente asignamos directamente
+        this.erroresStock[index] = `Stock insuficiente. Disponible: ${stock}`;
+        this.$emit(
+          "mensaje",
+          `Stock insuficiente para el producto. Disponible: ${stock}`,
+          "error"
+        );
+      } else {
+        this.erroresStock[index] = null;
+      }
     },
 
     agregarDetalle() {
       this.detalles.push({
-        codigoBarras: '',
-        nombre: '',
+        codigoBarras: "",
+        nombre: "",
         cantidad: 1,
         precio: 0,
         impuesto: 0,
         subtotal: 0,
-        producto: null
+        stock: 0,
+        producto: null,
       });
+      // Inicializar error de stock para el nuevo detalle
+      if (!this.erroresStock) {
+        this.erroresStock = [];
+      }
+      this.erroresStock.push(null);
       this.emitirCambios();
     },
 
     eliminarDetalle(index) {
       this.detalles.splice(index, 1);
+      // También eliminar el error correspondiente
+      if (this.erroresStock && this.erroresStock.length > index) {
+        this.erroresStock.splice(index, 1);
+      }
       this.emitirCambios();
     },
 
     emitirCambios() {
-      this.$emit('detalles-cambiados', this.detalles);
+      this.$emit("detalles-cambiados", this.detalles);
     },
 
     limpiar() {
       this.detalles = [];
+      this.erroresStock = [];
       this.emitirCambios();
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -238,6 +319,18 @@ export default {
   color: #6c757d;
 }
 
+.form-group input.error {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
 .search-container {
   position: relative;
   display: flex;
@@ -294,13 +387,13 @@ export default {
     grid-template-columns: 1fr;
     gap: 10px;
   }
-  
+
   .detalle-header {
     flex-direction: column;
     gap: 15px;
     text-align: center;
   }
-  
+
   .section {
     padding: 15px;
   }
