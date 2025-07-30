@@ -101,7 +101,10 @@ export default {
         stock: prod.stock,
         precio: prod.precio,
         bodegaId: prod.bodegaId,
-        impuestos: prod.impuestos.map((i) => ({ id: i.idImpuesto })),
+        impuestos:
+          prod.impuestos.length > 0
+            ? [{ id: prod.impuestos[0].idImpuesto }]
+            : [],
       };
 
       try {
@@ -123,7 +126,15 @@ export default {
       this.productoEditar = null;
     },
     seleccionarProducto(prod) {
-      this.productoEditar = { ...prod };
+      this.productoEditar = {
+        ...prod,
+        id: prod.id || prod.idProducto || null,
+        impuestos: prod.impuestos?.map((i) => ({
+          id: i.id || i.idImpuesto,
+          idImpuesto: i.id || i.idImpuesto,
+          porcentaje: i.porcentaje || 0,
+        })) || [{ idImpuesto: "", porcentaje: 0 }],
+      };
       this.mensaje = "";
     },
     async eliminarProducto(id) {

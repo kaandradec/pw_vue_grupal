@@ -96,4 +96,38 @@ VALUES ('333', 'IVA', 30.00);
 
 	INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
 VALUES ('4444', 'NONE', 00.00);
+
+INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
+VALUES ('555', 'IVA Reducido', 12.00);
+
+INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
+VALUES ('666', 'IVA General', 15.00);
+
+INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
+VALUES ('777', 'Impuesto Ecológico', 8.50);
+
+INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
+VALUES ('888', 'Impuesto Salud', 6.00);
+
+INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
+VALUES ('999', 'Impuesto Turismo', 4.50);
+
+INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
+VALUES ('1010', 'Impuesto Lujo', 20.00);
+
+INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
+VALUES ('1212', 'Impuesto Servicio Básico', 7.00);
+
+INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
+VALUES ('1313', 'Impuesto Digital', 5.50);
+
+INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
+VALUES ('1414', 'Impuesto Financiero', 2.50);
+
+INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
+VALUES ('1515', 'Impuesto Especial', 18.00);
+
+-- Manteniendo la opción de no aplicar impuesto
+INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
+VALUES ('0000', 'EXENTO', 0.00);
  */

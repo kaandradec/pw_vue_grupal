@@ -83,7 +83,7 @@ export default {
     producto: { type: Object, default: () => ({}) },
     bodegas: { type: Array, default: () => [] },
     impuestos: { type: Array, default: () => [] },
-    productosExistentes: { type: Array, default: () => [] }, // Productos para validar código barras duplicado
+    productosExistentes: { type: Array, default: () => [] },
   },
   data() {
     return {
@@ -117,10 +117,13 @@ export default {
           bodegaId: nuevo.bodegaId || null,
           impuestos:
             Array.isArray(nuevo.impuestos) && nuevo.impuestos.length > 0
-              ? nuevo.impuestos.map((i) => ({
-                  idImpuesto: i.id || "",
-                  porcentaje: i.porcentaje || 0,
-                }))
+              ? [
+                  {
+                    idImpuesto:
+                      nuevo.impuestos[0].id || nuevo.impuestos[0].idImpuesto,
+                    porcentaje: nuevo.impuestos[0].porcentaje || 0,
+                  },
+                ]
               : [{ idImpuesto: "", porcentaje: 0 }],
         };
         this.errores = {};
@@ -128,6 +131,7 @@ export default {
       immediate: true,
     },
   },
+
   methods: {
     limpiar() {
       this.formProducto = {
@@ -146,7 +150,6 @@ export default {
     asignarBodegaSiServicio() {
       if (this.formProducto.categoria === "servicio") {
         this.formProducto.stock = 0;
-        // No asignar bodega automáticamente, el usuario elige libremente
       }
     },
     actualizarPorcentaje(idx) {
@@ -162,16 +165,18 @@ export default {
       // Código de barras
       if (!this.formProducto.codigoBarras.trim()) {
         this.errores.codigoBarras = "El código de barras es obligatorio.";
-      } else if (!/^\d+$/.test(this.formProducto.codigoBarras)) {
+      } else if (!/^[A-Za-z0-9]+$/.test(this.formProducto.codigoBarras)) {
         this.errores.codigoBarras =
-          "El código de barras debe ser solo números.";
+          "El código de barras solo puede contener letras y números, sin caracteres especiales.";
       } else if (
-        !this.formProducto.id &&
         this.productosExistentes.some(
-          (p) => p.codigoBarras === this.formProducto.codigoBarras
+          (p) =>
+            p.codigoBarras === this.formProducto.codigoBarras &&
+            String(p.id) !== String(this.formProducto.id)
         )
       ) {
-        this.errores.codigoBarras = "Este código de barras ya existe.";
+        this.errores.codigoBarras =
+          "Este código de barras ya existe en otro producto o servicio.";
       }
 
       // Nombre
@@ -209,6 +214,11 @@ export default {
       return Object.keys(this.errores).length === 0;
     },
     onGuardar() {
+      if (this.formProducto.id) {
+        this.errores.codigoBarras =
+          "Este producto ya existe. Usa el botón 'Actualizar' para modificarlo.";
+        return;
+      }
       if (this.validarFormulario()) {
         this.$emit("guardar", this.formProducto);
         this.limpiar();
