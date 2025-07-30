@@ -72,6 +72,12 @@
 
 <script>
 export default {
+  props: {
+    clientesExistentes: {
+      type: Array,
+      required: true,
+    },
+  },
   emits: ["crear-cliente"],
   data() {
     return {
@@ -121,6 +127,14 @@ export default {
         this.cedulaError = "La cédula debe tener exactamente 10 dígitos.";
         return;
       }
+
+      if (
+        this.clientesExistentes.some((cliente) => cliente.cedula === cedula)
+      ) {
+        this.cedulaError = "Esta cédula ya se encuentra registrada.";
+        return;
+      }
+
       this.cedulaError = null;
     },
     guardar() {
@@ -165,4 +179,11 @@ button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
+.error-message {
+  color: red;
+  font-size: 12px;
+  display: block;
+  margin-top: -5px;
+  margin-bottom: 10px;
+} /* Añadido para que el span se vea bien */
 </style>

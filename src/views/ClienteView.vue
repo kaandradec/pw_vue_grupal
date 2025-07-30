@@ -1,6 +1,10 @@
 <template>
   <div class="container">
-    <ClienteFormulario @crear-cliente="handleCrearCliente" />
+    <ClienteFormulario
+    :clientes-existentes="listaClientes"
+    @crear-cliente="handleCrearCliente"
+  />
+
 
     <hr />
 
