@@ -56,3 +56,30 @@ const EProducto = async (id) => {
 export const EProductoFachada = async (id) => {
   await EProducto(id);
 };
+
+//BUSQUEDA POR CODIGO DE BARRA ------------>
+//GET -- public Response buscarProductoCompleto(@QueryParam("codigoBarras") String codigoBarras) {
+
+//http://localhost:8081/api/ventas/v1/productos/buscar?codigoBarras=123
+const buscarPorCodigoBarras = async (codigoBarras) => {
+  return axios
+    .get(
+      `http://localhost:8081/api/ventas/v1/productos/buscar?codigoBarras=${codigoBarras}`
+    )
+    .then((r) => r.data);
+};
+export const BuscarPorCodigoBarrasFachada = async (codigoBarras) => {
+  return await buscarPorCodigoBarras(codigoBarras);
+};
+
+//GET -- public Response consultarProductoCompleto(@PathParam("id") Integer id) {
+
+//http://localhost:8081/api/ventas/v1/productos/1/completo
+const consultarProductoCompleto = async (id) => {
+  return axios
+    .get(`http://localhost:8081/api/ventas/v1/productos/${id}/completo`)
+    .then((r) => r.data);
+};
+export const C_ProductoCompletoFachada = async (id) => {
+  return await consultarProductoCompleto(id);
+};
