@@ -236,6 +236,7 @@ export default {
 }
 
 label {
+  text-align: left;
   display: block;
   margin-top: 10px;
   font-weight: 600;
