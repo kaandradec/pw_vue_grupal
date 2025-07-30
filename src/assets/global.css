@@ -1,0 +1,109 @@
+/* Contenido de src/assets/global.css */
+
+.container {
+  max-width: 1024px;
+  margin: 0 auto;
+  margin-top: 16px;
+  padding: 25px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.form-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+p {
+  margin: 0;
+  color: #495057;
+}
+
+p:before {
+  content: attr(type);
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #495057;
+  font-size: 14px;
+}
+
+.filtros {
+  display: flex;
+  gap: 16px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  text-align: left;
+}
+input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.btns-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+button {
+  background-color: #00cb70;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 400;
+  font-size: 14px;
+  margin: 5px;
+}
+
+.btns-container :nth-child(2) {
+  background-color: #007bff;
+}
+
+.btns-container :nth-child(2):hover {
+  background-color: #0056b3;
+}
+
+span {
+  color: red;
+}
+
+@media (max-width: 840px) {
+  .form-container {
+    flex-direction: column;
+  }
+
+  .btns-container {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .filtros {
+    flex-wrap: wrap;
+  }
+
+  p,
+  input {
+    width: 100%;
+  }
+}
