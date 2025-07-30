@@ -83,3 +83,17 @@ const consultarProductoCompleto = async (id) => {
 export const C_ProductoCompletoFachada = async (id) => {
   return await consultarProductoCompleto(id);
 };
+
+/*
+ 	INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
+VALUES ('111', 'ICE', 10.00);
+
+INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
+VALUES ('222', 'ISD', 5.00);
+
+	INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
+VALUES ('333', 'IVA', 30.00);
+
+	INSERT INTO impuesto (impu_codigo, impu_nombre, impu_porcentaje)
+VALUES ('4444', 'NONE', 00.00);
+ */

@@ -18,24 +18,30 @@
     <span v-if="errores.nombre" class="error">{{ errores.nombre }}</span>
 
     <label>Categoría:</label>
-    <select v-model="formProducto.categoria">
+    <select v-model="formProducto.categoria" @change="asignarBodegaSiServicio">
       <option disabled value="">Seleccione categoría</option>
       <option value="producto">Producto</option>
       <option value="servicio">Servicio</option>
     </select>
     <span v-if="errores.categoria" class="error">{{ errores.categoria }}</span>
 
-    <label>Stock:</label>
-    <input type="number" v-model="formProducto.stock" />
-    <span v-if="errores.stock" class="error">{{ errores.stock }}</span>
-
     <label>Precio:</label>
     <input type="number" v-model="formProducto.precio" />
     <span v-if="errores.precio" class="error">{{ errores.precio }}</span>
 
-    <!-- Seleccionar Bodega -->
+    <label>Stock:</label>
+    <input
+      type="number"
+      v-model="formProducto.stock"
+      :disabled="formProducto.categoria === 'servicio'"
+    />
+    <span v-if="errores.stock" class="error">{{ errores.stock }}</span>
+
     <label>Bodega:</label>
-    <select v-model="formProducto.bodegaId" required>
+    <select
+      v-model="formProducto.bodegaId"
+      :disabled="formProducto.categoria === 'servicio'"
+    >
       <option disabled value="">Seleccione bodega</option>
       <option v-for="b in bodegas" :key="b.id" :value="b.id">
         {{ b.codigo }} - {{ b.ubicacion }}
@@ -43,7 +49,6 @@
     </select>
     <span v-if="errores.bodegaId" class="error">{{ errores.bodegaId }}</span>
 
-    <!-- Sección de Impuestos debajo del precio -->
     <div class="impuestos-section">
       <label>Impuestos:</label>
       <div
@@ -57,19 +62,12 @@
             {{ op.nombre }} ({{ op.porcentaje }}%)
           </option>
         </select>
-        <button type="button" @click="eliminarImpuesto(idx)">
-          Quitar Impuesto
-        </button>
       </div>
-      <span v-if="errores.impuestos" class="error">{{
-        errores.impuestos
-      }}</span>
     </div>
 
     <div class="acciones">
       <button @click="onGuardar">Guardar</button>
       <button @click="onActualizar">Actualizar</button>
-      <button @click="limpiar">Limpiar</button>
     </div>
   </div>
 </template>
@@ -139,10 +137,13 @@ export default {
       this.errores = {};
       this.$emit("limpiar");
     },
-    eliminarImpuesto(idx) {
-      this.formProducto.impuestos.splice(idx, 1);
-      if (this.formProducto.impuestos.length === 0) {
-        this.formProducto.impuestos.push({ idImpuesto: "", porcentaje: 0 });
+    asignarBodegaSiServicio() {
+      if (this.formProducto.categoria === "servicio") {
+        const bodegaServicios = this.bodegas.find(
+          (b) => b.codigo === "SERVICIOS"
+        );
+        this.formProducto.bodegaId = bodegaServicios ? bodegaServicios.id : 1;
+        this.formProducto.stock = 0;
       }
     },
     actualizarPorcentaje(idx) {
@@ -155,7 +156,7 @@ export default {
     validarFormulario() {
       this.errores = {};
 
-      // Código de barras: requerido, solo números, no vacío
+      // Código de barras
       if (!this.formProducto.codigoBarras.trim()) {
         this.errores.codigoBarras = "El código de barras es obligatorio.";
       } else if (!/^\d+$/.test(this.formProducto.codigoBarras)) {
@@ -163,52 +164,36 @@ export default {
           "El código de barras debe ser solo números.";
       }
 
-      // Nombre: requerido, no vacío, no solo números
+      // Nombre
       if (!this.formProducto.nombre.trim()) {
         this.errores.nombre = "El nombre es obligatorio.";
       } else if (/^\d+$/.test(this.formProducto.nombre.trim())) {
         this.errores.nombre = "El nombre no puede ser solo números.";
       }
 
-      // Categoría: requerido y debe ser producto o servicio
+      // Categoría
       if (!this.formProducto.categoria) {
         this.errores.categoria = "Debe seleccionar una categoría.";
-      } else if (
-        !["producto", "servicio"].includes(this.formProducto.categoria)
-      ) {
-        this.errores.categoria = "Categoría inválida.";
       }
 
-      // Stock: debe ser número >= 0
+      // Stock
       if (
-        this.formProducto.stock === null ||
-        this.formProducto.stock < 0 ||
-        isNaN(this.formProducto.stock)
+        this.formProducto.categoria === "producto" &&
+        (this.formProducto.stock === null ||
+          this.formProducto.stock < 0 ||
+          isNaN(this.formProducto.stock))
       ) {
         this.errores.stock = "El stock debe ser un número mayor o igual a 0.";
       }
 
-      // Precio: debe ser número > 0
-      if (
-        this.formProducto.precio === null ||
-        this.formProducto.precio <= 0 ||
-        isNaN(this.formProducto.precio)
-      ) {
+      // Precio
+      if (this.formProducto.precio === null || this.formProducto.precio <= 0) {
         this.errores.precio = "El precio debe ser un número mayor que 0.";
       }
 
-      // Bodega: requerida
+      // Bodega
       if (!this.formProducto.bodegaId) {
         this.errores.bodegaId = "Debe seleccionar una bodega.";
-      }
-
-      // Impuestos: validar que todos estén seleccionados
-      const impuestosInvalidos = this.formProducto.impuestos.some(
-        (imp) => !imp.idImpuesto
-      );
-      if (impuestosInvalidos) {
-        this.errores.impuestos =
-          "Seleccione todos los impuestos o elimine vacíos.";
       }
 
       return Object.keys(this.errores).length === 0;
@@ -216,11 +201,13 @@ export default {
     onGuardar() {
       if (this.validarFormulario()) {
         this.$emit("guardar", this.formProducto);
+        this.limpiar();
       }
     },
     onActualizar() {
       if (this.validarFormulario()) {
         this.$emit("actualizar", this.formProducto);
+        this.limpiar();
       }
     },
   },

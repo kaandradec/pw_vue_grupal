@@ -130,7 +130,7 @@ export default {
 
       try {
         await EProductoFachada(id);
-        this.mensaje = "🗑️ Producto eliminado correctamente";
+        this.mensaje = "Producto eliminado correctamente";
       } catch (error) {
         console.error("Error al eliminar producto:", error);
         this.mensaje = "Error al eliminar el producto";
