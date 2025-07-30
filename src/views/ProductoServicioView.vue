@@ -126,9 +126,18 @@ export default {
       this.mensaje = "";
     },
     async eliminarProducto(id) {
-      await EProductoFachada(id);
-      this.mensaje = "🗑️ Producto eliminado correctamente";
-      this.listaProductos = await L_ProductosFachada();
+      this.listaProductos = this.listaProductos.filter((p) => p.id !== id);
+
+      try {
+        await EProductoFachada(id);
+        this.mensaje = "🗑️ Producto eliminado correctamente";
+      } catch (error) {
+        console.error("Error al eliminar producto:", error);
+        this.mensaje = "Error al eliminar el producto";
+
+        this.listaProductos = await L_ProductosFachada();
+      }
+
       if (this.productoEditar && this.productoEditar.id === id) {
         this.limpiarFormulario();
       }
